@@ -33,9 +33,22 @@ project.xcworkspace
 *.ipch
 
 .svn/
-obj/
-bin/
+example-*/obj
+example-*/.vscode/
 build/
 !data/
+!/bin/data/
+!/bin/data/*
+!example-*/bin
+example-*/bin/*
+!example-*/bin/data/
+!example-*/bin/data/*
+
+.vscode/
 
 ofxCv.wiki/
+
+example-*/config.make
+example-*/Makefile
+example-*/.gitignore
+.directory
