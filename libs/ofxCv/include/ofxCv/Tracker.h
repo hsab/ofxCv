@@ -64,7 +64,7 @@ class TrackedObject {
    T object;
 
    TrackedObject(const T& object, unsigned int label, int index)
-       : lastSeen(0), label(label), age(0), index(index), object(object) {
+       : lastSeen(0), label(label), age(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()), index(index), object(object) {
    }
    TrackedObject(const T& object, const TrackedObject<T>& previous, int index)
        : lastSeen(0), label(previous.label), age(previous.age), index(index), object(object) {
