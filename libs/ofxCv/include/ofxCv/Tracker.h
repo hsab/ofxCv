@@ -58,22 +58,24 @@ template <class T>
 class TrackedObject {
   protected:
    unsigned int lastSeen, label, age;
+   uint64_t ageNano;
    int index;
 
   public:
    T object;
 
    TrackedObject(const T& object, unsigned int label, int index)
-       : lastSeen(0), label(label), age(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()), index(index), object(object) {
+       : lastSeen(0), label(label), ageNano(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()), age(0), index(index), object(object) {
    }
    TrackedObject(const T& object, const TrackedObject<T>& previous, int index)
-       : lastSeen(0), label(previous.label), age(previous.age), index(index), object(object) {
+       : lastSeen(0), label(previous.label), age(previous.age), ageNano(previous.ageNano), index(index), object(object) {
    }
    TrackedObject(const TrackedObject<T>& old)
-       : lastSeen(old.lastSeen), label(old.label), age(old.age), index(-1), object(old.object) {
+       : lastSeen(old.lastSeen), label(old.label), age(old.age), ageNano(old.ageNano), index(-1), object(old.object) {
    }
    void timeStep(bool visible) {
       age++;
+      ageNano++;
       if (!visible) {
          lastSeen++;
       }
@@ -84,6 +86,11 @@ class TrackedObject {
    unsigned long getAge() const {
       return age;
    }
+
+   uint64_t getAgeNano() const {
+      return ageNano;
+   }
+
    unsigned int getLabel() const {
       return label;
    }
@@ -137,6 +144,7 @@ class Tracker {
    bool existsCurrent(unsigned int label) const;
    bool existsPrevious(unsigned int label) const;
    int getAge(unsigned int label) const;
+   uint64_t getAgeNano(unsigned int label) const;
    int getLastSeen(unsigned int label) const;
 };
 
@@ -287,6 +295,11 @@ bool Tracker<T>::existsPrevious(unsigned int label) const {
 template <class T>
 int Tracker<T>::getAge(unsigned int label) const {
    return currentLabelMap.find(label)->second->getAge();
+}
+
+template <class T>
+uint64_t Tracker<T>::getAgeNano(unsigned int label) const {
+   return currentLabelMap.find(label)->second->getAgeNano();
 }
 
 template <class T>

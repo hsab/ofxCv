@@ -59,7 +59,7 @@ std::vector<Detection> DNN::detect(cv::Mat mat, float thresh) {
    tracker.track(boundingRects);
 
    for (int i = 0; i < detections.size(); i++) {
-      detections[i].age = tracker.getAge(getLabel(i));
+      detections[i].age = tracker.getAgeNano(getLabel(i));
       cv::Rect smooth = tracker.getSmoothed(getLabel(i));
       detections[i].smoothX = smooth.x;
       detections[i].smoothY = smooth.y;

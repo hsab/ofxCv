@@ -30,7 +30,7 @@ class Detection {
    float smoothHeight;
    float smoothCenterX;
    float smoothCenterY;
-   float age;
+   uint64_t age;
 
    bool operator<(Detection const& comp) const {
       return (age < comp.age);
