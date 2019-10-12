@@ -31,6 +31,7 @@ void DNN::forward(cv::Mat mat) {
 }
 
 std::vector<Detection> DNN::detect(cv::Mat mat, float thresh) {
+   cv::Size s = mat.size();
    boundingRects.clear();
 
    forward(mat);
@@ -38,18 +39,19 @@ std::vector<Detection> DNN::detect(cv::Mat mat, float thresh) {
    for (int i = 0; i < net_out.size[2]; i++) {
       cv::Vec<float, 7> a = net_out.at<cv::Vec<float, 7>>(0, 0, i);
       float cert = a[2];
-      if (cert >= thresh) {
-         Detection d;
-         d.certainty = cert;
-         d.left = d.x = a[3] * mat.cols;
-         d.top = d.y = a[4] * mat.rows;
-         d.right = a[5] * mat.cols;
-         d.bottom = a[6] * mat.rows;
-         d.centerX = (d.left + d.right) / 2;
-         d.centerY = (d.top + d.bottom) / 2;
-         d.width = d.right - d.left;
-         d.height = d.bottom - d.top;
 
+      Detection d;
+      d.certainty = cert;
+      d.left = d.x = a[3] * mat.cols;
+      d.top = d.y = a[4] * mat.rows;
+      d.right = a[5] * mat.cols;
+      d.bottom = a[6] * mat.rows;
+      d.centerX = (d.left + d.right) / 2;
+      d.centerY = (d.top + d.bottom) / 2;
+      d.width = d.right - d.left;
+      d.height = d.bottom - d.top;
+
+      if (cert >= thresh && d.left + d.width <= s.width && d.top + d.height <= s.height) {
          boundingRects.push_back(cv::Rect(d.x, d.y, d.width, d.height));
 
          detections.push_back(d);

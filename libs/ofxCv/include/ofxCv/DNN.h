@@ -33,11 +33,21 @@ class Detection {
    uint64_t age;
 
    bool operator<(Detection const& comp) const {
-      return (age < comp.age);
+      bool ageComp = age < comp.age;
+      bool certComp = certainty < comp.certainty;
+
+      // if (certComp)
+      //    return certComp;
+      return ageComp;
    }
 
    bool operator>(Detection const& comp) const {
-      return (age > comp.age);
+      bool ageComp = age > comp.age;
+      bool certComp = certainty > comp.certainty;
+
+      // if (certComp)
+         return certComp;
+      // return ageComp;
    }
 };
 
